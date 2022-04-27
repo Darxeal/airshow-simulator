@@ -5,6 +5,7 @@ from pathlib import Path
 from types import ModuleType
 
 from rlbot.agents.base_script import BaseScript
+from rlbot.matchconfig.loadout_config import LoadoutConfig
 from rlbot.matchconfig.match_config import PlayerConfig, MatchConfig, MutatorConfig
 from rlbot.setup_manager import SetupManager
 
@@ -25,6 +26,10 @@ def create_player_config(name: str):
     player_config.rlbot_controlled = True
     player_config.name = name
     player_config.team = 0
+    player_config.loadout_config = LoadoutConfig()
+    player_config.loadout_config.team_color_id = 26
+    player_config.loadout_config.decal_id = 306
+    player_config.loadout_config.boost_id = 40
     return player_config
 
 
@@ -87,6 +92,7 @@ class AirshowSimulator(BaseScript):
                     self.choreo = choreography.Choreography(self.game_interface, packet)
                     print(f"[{mtime}] Reloaded choreo")
                     self.last_mtime = mtime
+
                 except Exception as ex:
                     print()
                     print("-----------------RELOAD EXCEPTION-----------------")
@@ -95,11 +101,13 @@ class AirshowSimulator(BaseScript):
 
             try:
                 controls = self.choreo.get_outputs(packet)
+
             except Exception as ex:
                 print()
                 print("-----------------STEP EXCEPTION-----------------")
                 print(ex)
                 print(traceback.format_exc())
+
                 time.sleep(1.0)
                 continue
 

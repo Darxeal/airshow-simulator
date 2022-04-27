@@ -2,7 +2,7 @@ import dataclasses
 from dataclasses import dataclass, field
 from typing import Dict, List, Collection, Optional
 
-from rlbot.utils.game_state_util import CarState, Physics, Vector3, Rotator
+from rlbot.utils.game_state_util import CarState, Physics, Vector3, Rotator, BallState
 from rlbot.utils.structures.game_interface import GameInterface
 
 from drone import Drone
@@ -13,13 +13,13 @@ from rlutilities.linear_algebra import vec3, mat3, rotation_to_euler
 class StepResult:
     finished: bool = False
     car_states: Dict[int, CarState] = field(default_factory=lambda: {})
-    evaluate: bool = False  # whether to evaluate this step
+    ball_state: Optional[BallState] = None
 
     def __add__(self, other: "StepResult") -> "StepResult":
         return StepResult(
             finished=self.finished or other.finished,
             car_states={**self.car_states, **other.car_states},
-            evaluate=self.evaluate or other.evaluate
+            ball_state=self.ball_state or other.ball_state,
         )
 
 
